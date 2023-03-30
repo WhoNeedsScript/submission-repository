@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const App = () => {
   const anecdotes = [
@@ -11,13 +11,47 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
-  const [selected, setSelected] = useState(0)
+  
 
+
+  const handleSelectRandomeAnecdote=()=>{
+    setSelected(Math.floor(Math.random() * (anecdotes.length-1)))
+  }
+  const handleVoteAnecdote=()=>{
+    const copy = [...vote]
+    console.log(copy)
+    copy[selected] += 1
+    setVote(copy)  
+  }
+  const [selected, setSelected] = useState(0)
+  const [maxVote,setMaxVote]= useState(0)
+  const [vote, setVote] = useState(new Array(anecdotes.length).fill(0))
+ 
+  useEffect(() => {
+    setMaxVote(vote.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0))
+  }, [vote]);
+  
   return (
+    <>
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
+      <p>has {vote[selected]} votes</p>
     </div>
+    <div>
+    <button onClick={handleVoteAnecdote}>vote</button>
+    <button onClick={handleSelectRandomeAnecdote}>next anecdote</button>
+    </div>
+    <div>
+  <h1>Anecdote with the most votes</h1>
+  {anecdotes[maxVote]}
+  <p>has {vote[maxVote]} votes</p>
+  
+  {/* Withou state for the maxVote*/}
+  {/*anecdotes[vote.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0)]}*/}
+  {/*<p>has {vote[vote.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0)]} votes</p>*/}
+</div>
+    </>
   )
 }
 
